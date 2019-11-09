@@ -27,5 +27,15 @@ function run_wp2static_addon_zip() {
 	$controller->run();
 }
 
+register_activation_hook(
+    __FILE__,
+    [ 'WP2StaticZip\Controller', 'activate' ]
+);
+
+register_deactivation_hook(
+    __FILE__,
+    [ 'WP2StaticZip\Controller', 'deactivate' ]
+);
+
 run_wp2static_addon_zip();
 
