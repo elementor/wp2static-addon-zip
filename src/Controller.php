@@ -14,14 +14,25 @@ class Controller {
 
 	public function run() {
         add_action(
-            'wp2static_crawling_complete',
-            [ $this, 'postProcess' ],
-            $args);
+            'wp2static_deploy',
+            [ $this, 'generateZip' ],
+            15,
+            1);
 
         add_action(
-            'wp2static_post_processing_complete',
-            [ $this, 'generateZip' ],
-            $args);
+            'wp2static_post_process_file',
+            [ $this, 'convertURLsToOffline' ],
+            15,
+            2);
+
+        add_action(
+            'wp2static_set_destination_url',
+            [ $this, 'setDestinationURL' ]);
+
+
+        add_action(
+            'wp2static_set_wordpress_site_url',
+            [ $this, 'modifyWordPressSiteURL' ]);
 
         if ( defined( 'WP_CLI' ) ) {
             \WP_CLI::add_command(
@@ -30,59 +41,30 @@ class Controller {
         }
 	}
 
-    public function postProcess( $args ) {
-        do_action( 'wp2static_post_processing_commence', $args );
-
-        error_log(print_r($args, true));
-        error_log('Zip Addon post processing');
-
-        /* 
-
-        TODO: where is PostProcesing living?
-
-        if in WP2Staatic Core, but we need to process differently for ZIP (offline URLs)
-
-        do we do_action to have core do the post processing?
-
-        if yes, we need to pass arg of destination_url + deployment name
-
-        after core's PostProcessing, we need to then apply our own post_processing, to set URLs to offline mode...if that option is set in Zip Addon options
-
-        PostProcessingCache can avoid us re-running for files that haven't changed
-
-        use destination_url + deployment name in PostProcessingCache index to ignore when URL or deploy method changes.... else, could we use encrypted_options as index, seeing as it should be a unique combination of all options... so if any deployment option changes, we're ignoring that cache? extend to hash of all PostProcessingOptions, to auto-invalidate....
-
-        $args = [
-            'destinationURL' => 'https://somedomain.com',
-            // postprocessoptions available in core function
-            // 'postProcessOptionsHash' => $hashOfPostProcessingOptions,
-            'encryptedDeployAddonOptions' => $encryptedOptions,
-        ];
-
-        ie: do_action('wp2static_post_process', $args)
-
-        and in WP2Static\PostProcessor() check/add to PostProcessingCache,
-        using passed args to form Cache key
-
-        
-
-        */
-
-
-        error_log('reading files from StaticSite');
-
-        error_log('processing each file and saving to processed dir');
-        exec('cp -R ' . $args['staticSitePath'] . ' /tmp/processed');
-
-        // add extensibility for other 
-        do_action( 'wp2static_post_processing_complete', $args );
+    public function modifyWordPressSiteURL( $site_url ) {
+        return rtrim( $site_url, '/' );
     }
 
-    public function generateZip() {
-        error_log('Zip Addon generate Zip');
+    public function setDestinationURL( $destination_url ) {
+        return 'https://wp2staticv7simpler.netlify.com';
+    }
+
+    public function convertURLsToOffline( $file, $processed_site_path ) {
+        error_log('Zip Addon converting URLs to offline in file: ' . $file);
+        error_log('within ProcessedSite path: ' . $processed_site_path);
+
+        error_log('Detect type of file by name, extension or content type');
+
+        error_log('modify URL');
+
+        // other actions can process after this, based on priority
+    }
+
+    public function generateZip( $processed_site_path ) {
+        error_log('Zip Addon generating Zip');
 
         $zip_archiver = new ZipArchiver();
-        $zip_archiver->GenerateArchive();
+        $zip_archiver->generateArchive( $processed_site_path );
     }
 
     /*
