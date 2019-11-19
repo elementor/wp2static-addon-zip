@@ -30,11 +30,15 @@ class CLI {
         }
 
         if ( $action === 'get_path' ) {
-            WP_CLI::line( 'printing path to zip' );
+            $zip_path = \WP2Static\SiteInfo::getPath( 'uploads' ) .
+                'wp2static-processed-site.zip';
+            WP_CLI::line( $zip_path );
         }
 
         if ( $action === 'get_url' ) {
-            WP_CLI::line( 'printing path to zip' );
+            $zip_url = \WP2Static\SiteInfo::getUrl( 'uploads' ) .
+                'wp2static-processed-site.zip';
+            WP_CLI::line( $zip_url );
         }
     }
 }

@@ -46,7 +46,7 @@ class Controller {
     }
 
     public function setDestinationURL( $destination_url ) {
-        return 'https://wp2staticv7simpler.netlify.com';
+        return 'https://psqauretestnov19.netlify.com';
     }
 
     public function convertURLsToOffline( $file, $processed_site_path ) {
@@ -106,7 +106,6 @@ class Controller {
     }
 
     public static function activate_for_single_site() : void {
-        error_log('activating zip addon');
         self::setDefaultOptions();
     }
 
