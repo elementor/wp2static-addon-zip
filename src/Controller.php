@@ -13,6 +13,12 @@ class Controller {
 	}
 
 	public function run() {
+        add_filter(
+            'wp2static_render_options_page_vars',
+            [ $this, 'addOptionsTemplateVars' ],
+            15,
+            1);
+
         add_action(
             'wp2static_deploy',
             [ $this, 'generateZip' ],
@@ -59,6 +65,30 @@ class Controller {
         error_log('modify URL');
 
         // other actions can process after this, based on priority
+    }
+
+    public function addOptionsTemplateVars( $template_vars ) {
+        error_log('Adding template vars to options page');
+
+        $template_vars['aNewVar'] = 'something new goes here';
+
+        // find position of deploy options
+        $deployment_options_position = 0;
+        foreach( $template_vars['options_templates'] as $index => $options_template ) {
+          if (strpos($options_template, 'core-deployment-options.php') !== false) {
+            $deployment_options_position = $index + 1;
+          } 
+        } 
+
+        // insert zip deploy options template after that
+        array_splice(
+            $template_vars['options_templates'],
+            $deployment_options_position,
+            0, // # elements to remove
+            [__DIR__ . '/../views/deploy-options.php']
+        );
+
+        return $template_vars;
     }
 
     public function generateZip( $processed_site_path ) {
