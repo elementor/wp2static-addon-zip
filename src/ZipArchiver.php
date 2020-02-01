@@ -68,5 +68,7 @@ class ZipArchiver {
         $zip_path = $processed_site_path . '.zip';
 
         rename( $temp_zip, $zip_path );
+
+        chmod( $zip_path, 0644 );
     }
 }

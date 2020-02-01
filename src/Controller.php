@@ -46,7 +46,8 @@ class Controller {
     }
 
     public function setDestinationURL( $destination_url ) {
-        return 'https://psqauretestnov19.netlify.com';
+        // TODO: get ZIP destination URL from settings
+        return 'https://example.com';
     }
 
     public function convertURLsToOffline( $file, $processed_site_path ) {

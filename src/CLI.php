@@ -4,6 +4,7 @@ namespace WP2StaticZip;
 
 use WP_CLI;
 
+
 /**
  * WP2StaticZip WP-CLI commands
  *
