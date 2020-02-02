@@ -19,11 +19,23 @@ class Controller {
             15,
             1);
 
+        add_filter(
+            'wp2static_add_ui_admin_notices',
+            [ $this, 'addAdminNotices' ],
+            15,
+            1);
+
+        add_action(
+            'wp2static_addon_ui_save_options',
+            [ $this, 'uiSaveOptions' ],
+            15,
+            1);
+
         add_action(
             'wp2static_deploy',
             [ $this, 'generateZip' ],
             15,
-            1);
+            0);
 
         add_action(
             'wp2static_post_process_file',
@@ -67,9 +79,13 @@ class Controller {
         // other actions can process after this, based on priority
     }
 
-    public function addOptionsTemplateVars( $template_vars ) {
-        error_log('Adding template vars to options page');
+    public function addAdminNotices( $notices ) {
+        $notices['errors'][] = 'added an error notice via zip plugin';
 
+        return $notices;
+    }
+
+    public function addOptionsTemplateVars( $template_vars ) {
         $template_vars['aNewVar'] = 'something new goes here';
 
         // find position of deploy options
@@ -89,6 +105,12 @@ class Controller {
         );
 
         return $template_vars;
+    }
+
+    public function uiSaveOptions() {
+        error_log('Zip Addon Saving Options, accessing $_POST');
+
+        error_log(print_r($_POST, true));
     }
 
     public function generateZip( $processed_site_path ) {
