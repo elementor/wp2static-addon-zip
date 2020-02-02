@@ -13,6 +13,33 @@ class Controller {
 	}
 
 	public function run() {
+        // initialize options DB
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE $table_name (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            name VARCHAR(255) NOT NULL,
+            value VARCHAR(255) NOT NULL,
+            label VARCHAR(255) NULL,
+            description VARCHAR(255) NULL,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta( $sql );
+
+        // check for seed data
+        // if deployment_url option doesn't exist, create:
+        $options = $this->getOptions();
+
+        if ( ! isset( $options['deployment_url'] ) ) {
+            $this->seedOptions();
+        }
+
         add_filter(
             'wp2static_render_options_page_vars',
             [ $this, 'addOptionsTemplateVars' ],
@@ -35,7 +62,7 @@ class Controller {
             'wp2static_deploy',
             [ $this, 'generateZip' ],
             15,
-            0);
+            1);
 
         add_action(
             'wp2static_post_process_file',
@@ -64,8 +91,9 @@ class Controller {
     }
 
     public function setDestinationURL( $destination_url ) {
-        // TODO: get ZIP destination URL from settings
-        return 'https://example.com';
+        $options = $this->getOptions();
+
+        return $options['deployment_url']->value;
     }
 
     public function convertURLsToOffline( $file, $processed_site_path ) {
@@ -85,8 +113,63 @@ class Controller {
         return $notices;
     }
 
+    /**
+     *  Get all add-on options
+     *
+     *  @return mixed[] All options
+     */
+    public function getOptions() : array {
+        global $wpdb;
+        $options = [];
+
+        $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
+
+        $rows = $wpdb->get_results( "SELECT * FROM $table_name" );
+
+        foreach($rows as $row) {
+            $options[$row->name] = $row;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Seed options
+     *
+     */
+    public static function seedOptions() : void {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
+
+        $query_string = "INSERT INTO $table_name (name, value, label, description) VALUES (%s, %s, %s, %s);";
+        $query = $wpdb->prepare(
+            $query_string,
+            'deployment_url',
+            'https://example.com',
+            'Deployment URL',
+            'The URL your static site will be published to');
+
+        $wpdb->query( $query );
+    }
+
+    /**
+     * Save options
+     *
+     */
+    public static function saveOption( $name, $value ) : void {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
+
+        $query_string = "INSERT INTO $table_name (name, value) VALUES (%s, %s);";
+        $query = $wpdb->prepare( $query_string, $name, $value );
+
+        $wpdb->query( $query );
+    }
+
     public function addOptionsTemplateVars( $template_vars ) {
-        $template_vars['aNewVar'] = 'something new goes here';
+        $template_vars['wp2static_zip_addon_options'] = $this->getOptions();
 
         // find position of deploy options
         $deployment_options_position = 0;
@@ -110,7 +193,10 @@ class Controller {
     public function uiSaveOptions() {
         error_log('Zip Addon Saving Options, accessing $_POST');
 
-        error_log(print_r($_POST, true));
+        if (isset($_POST['deployment_url'])) {
+            // TODO: validate URL
+            $this->saveOption( 'deployment_url', $_POST['deployment_url'] );
+        }
     }
 
     public function generateZip( $processed_site_path ) {
