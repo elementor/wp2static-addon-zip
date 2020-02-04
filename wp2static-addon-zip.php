@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name:       WP2Static Add-on: Zip
+ * Plugin Name:       WP2Static Add-on: Zip Deployment
  * Plugin URI:        https://wp2static.com
  * Description:       Zip deployment add-on for WP2Static.
  * Version:           0.1
@@ -18,7 +18,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 define( 'WP2STATIC_ZIP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PLUGIN_NAME_VERSION', '0.1' );
+define( 'WP2STATIC_ZIP_VERSION', '0.1' );
 
 require WP2STATIC_ZIP_PATH . 'vendor/autoload.php';
 
