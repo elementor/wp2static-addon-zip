@@ -46,12 +46,6 @@ class Controller {
             15,
             1);
 
-        add_filter(
-            'wp2static_add_ui_admin_notices',
-            [ $this, 'addAdminNotices' ],
-            15,
-            1);
-
         add_action(
             'wp2static_addon_ui_save_options',
             [ $this, 'uiSaveOptions' ],
@@ -105,12 +99,6 @@ class Controller {
         error_log('modify URL');
 
         // other actions can process after this, based on priority
-    }
-
-    public function addAdminNotices( $notices ) {
-        $notices['errors'][] = 'added an error notice via zip plugin';
-
-        return $notices;
     }
 
     /**
