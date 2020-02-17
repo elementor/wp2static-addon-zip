@@ -34,23 +34,26 @@ class Controller {
 
         // check for seed data
         // if deployment_url option doesn't exist, create:
-        $options = $this->getOptions();
+        // $options = $this->getOptions();
 
-        if ( ! isset( $options['deployment_url'] ) ) {
-            $this->seedOptions();
-        }
+        // if ( ! isset( $options['deployment_url'] ) ) {
+        //     $this->seedOptions();
+        // }
 
-        add_filter(
-            'wp2static_render_options_page_vars',
-            [ $this, 'addOptionsTemplateVars' ],
-            15,
-            1);
+        add_filter( 'wp2static_add_menu_items', [ 'WP2StaticZip\Controller', 'addSubmenuPage' ] );
 
-        add_action(
-            'wp2static_addon_ui_save_options',
-            [ $this, 'uiSaveOptions' ],
-            15,
-            1);
+        // TOOD: used only if adding to core Options view
+        // add_filter(
+        //     'wp2static_render_options_page_vars',
+        //     [ $this, 'addOptionsTemplateVars' ],
+        //     15,
+        //     1);
+
+        // add_action(
+        //     'wp2static_addon_ui_save_options',
+        //     [ $this, 'uiSaveOptions' ],
+        //     15,
+        //     1);
 
         add_action(
             'wp2static_deploy',
@@ -106,86 +109,104 @@ class Controller {
      *
      *  @return mixed[] All options
      */
-    public function getOptions() : array {
-        global $wpdb;
-        $options = [];
+    // public function getOptions() : array {
+    //     global $wpdb;
+    //     $options = [];
 
-        $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
+    //     $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
 
-        $rows = $wpdb->get_results( "SELECT * FROM $table_name" );
+    //     $rows = $wpdb->get_results( "SELECT * FROM $table_name" );
 
-        foreach($rows as $row) {
-            $options[$row->name] = $row;
-        }
+    //     foreach($rows as $row) {
+    //         $options[$row->name] = $row;
+    //     }
 
-        return $options;
-    }
+    //     return $options;
+    // }
 
     /**
      * Seed options
      *
      */
-    public static function seedOptions() : void {
-        global $wpdb;
+    // public static function seedOptions() : void {
+    //     global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
+    //     $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
 
-        $query_string = "INSERT INTO $table_name (name, value, label, description) VALUES (%s, %s, %s, %s);";
-        $query = $wpdb->prepare(
-            $query_string,
-            'deployment_url',
-            'https://example.com',
-            'Deployment URL',
-            'The URL your static site will be published to');
+    //     $query_string = "INSERT INTO $table_name (name, value, label, description) VALUES (%s, %s, %s, %s);";
+    //     $query = $wpdb->prepare(
+    //         $query_string,
+    //         'deployment_url',
+    //         'https://example.com',
+    //         'Deployment URL',
+    //         'The URL your static site will be published to');
 
-        $wpdb->query( $query );
-    }
+    //     $wpdb->query( $query );
+    // }
 
     /**
      * Save options
      *
      */
-    public static function saveOption( $name, $value ) : void {
-        global $wpdb;
+    // public static function saveOption( $name, $value ) : void {
+    //     global $wpdb;
 
-        $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
+    //     $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
 
-        $query_string = "INSERT INTO $table_name (name, value) VALUES (%s, %s);";
-        $query = $wpdb->prepare( $query_string, $name, $value );
+    //     $query_string = "INSERT INTO $table_name (name, value) VALUES (%s, %s);";
+    //     $query = $wpdb->prepare( $query_string, $name, $value );
 
-        $wpdb->query( $query );
+    //     $wpdb->query( $query );
+    // }
+
+    public static function renderZipPage() : void {
+        $view = [];
+        $view['zip_size'] = filesize(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip');
+        $view['zip_created'] = date ("F d Y H:i:s.", filemtime(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip') );
+
+        $view['uploads_path'] = \WP2Static\SiteInfo::getPath('uploads');
+        $view['zip_path'] =
+            is_file(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip') ?
+                \WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip' : false;
+
+        $view['zip_url'] =
+            is_file(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip') ?
+                \WP2Static\SiteInfo::getUrl( 'uploads' ) . 'wp2static-processed-site.zip' : '#';
+
+        require_once __DIR__ . '/../views/zip-page.php';
     }
 
-    public function addOptionsTemplateVars( $template_vars ) {
-        $template_vars['wp2static_zip_addon_options'] = $this->getOptions();
+    // public function addOptionsTemplateVars( $template_vars ) {
+    //     $template_vars['wp2static_zip_addon_options'] = $this->getOptions();
 
-        // find position of deploy options
-        $deployment_options_position = 0;
-        foreach( $template_vars['options_templates'] as $index => $options_template ) {
-          if (strpos($options_template, 'core-deployment-options.php') !== false) {
-            $deployment_options_position = $index + 1;
-          } 
-        } 
+    //     // find position of deploy options
+    //     $deployment_options_position = 0;
+    //     foreach( $template_vars['options_templates'] as $index => $options_template ) {
+    //       if (strpos($options_template, 'core-deployment-options.php') !== false) {
+    //         $deployment_options_position = $index + 1;
+    //       } 
+    //     } 
 
-        // insert zip deploy options template after that
-        array_splice(
-            $template_vars['options_templates'],
-            $deployment_options_position,
-            0, // # elements to remove
-            [__DIR__ . '/../views/deploy-options.php']
-        );
+    //     // insert zip deploy options template after that
+    //     array_splice(
+    //         $template_vars['options_templates'],
+    //         $deployment_options_position,
+    //         0, // # elements to remove
+    //         [__DIR__ . '/../views/deploy-options.php']
+    //     );
 
-        return $template_vars;
-    }
+    //     return $template_vars;
+    // }
 
-    public function uiSaveOptions() {
-        error_log('Zip Addon Saving Options, accessing $_POST');
+    // TODO: use in other addons needing to add to core options
+    // public function uiSaveOptions() {
+    //     error_log('Zip Addon Saving Options, accessing $_POST');
 
-        if (isset($_POST['deployment_url'])) {
-            // TODO: validate URL
-            $this->saveOption( 'deployment_url', $_POST['deployment_url'] );
-        }
-    }
+    //     if (isset($_POST['deployment_url'])) {
+    //         // TODO: validate URL
+    //         $this->saveOption( 'deployment_url', $_POST['deployment_url'] );
+    //     }
+    // }
 
     public function generateZip( $processed_site_path ) {
         error_log('Zip Addon generating Zip');
@@ -291,5 +312,13 @@ class Controller {
         } else {
             self::activate_for_single_site();
         }
+    }
+
+    public static function addSubmenuPage($submenu_pages) {
+        $submenu_pages['zip'] = [ 'WP2StaticZip\Controller', 'renderZipPage' ];
+
+        error_log(print_r($submenu_pages, true));
+
+        return $submenu_pages;
     }
 }
