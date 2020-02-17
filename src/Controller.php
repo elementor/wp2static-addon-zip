@@ -67,9 +67,9 @@ class Controller {
             15,
             2);
 
-        add_action(
-            'wp2static_set_destination_url',
-            [ $this, 'setDestinationURL' ]);
+        // add_action(
+        //     'wp2static_set_destination_url',
+        //     [ $this, 'setDestinationURL' ]);
 
 
         add_action(
@@ -87,11 +87,11 @@ class Controller {
         return rtrim( $site_url, '/' );
     }
 
-    public function setDestinationURL( $destination_url ) {
-        $options = $this->getOptions();
+    // public function setDestinationURL( $destination_url ) {
+    //     $options = $this->getOptions();
 
-        return $options['deployment_url']->value;
-    }
+    //     return $options['deployment_url']->value;
+    // }
 
     public function convertURLsToOffline( $file, $processed_site_path ) {
         error_log('Zip Addon converting URLs to offline in file: ' . $file);
@@ -314,10 +314,8 @@ class Controller {
         }
     }
 
-    public static function addSubmenuPage($submenu_pages) {
+    public static function addSubmenuPage( $submenu_pages ) {
         $submenu_pages['zip'] = [ 'WP2StaticZip\Controller', 'renderZipPage' ];
-
-        error_log(print_r($submenu_pages, true));
 
         return $submenu_pages;
     }

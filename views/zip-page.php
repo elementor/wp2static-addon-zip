@@ -14,6 +14,8 @@
             <td>
                 <?php if ( $view['zip_path'] ) : ?>
                     <?php echo $view['zip_size']; ?>
+                <?php else: ?>
+                    No ZIP found.
                 <?php endif; ?>
             </td>
             <td>
@@ -24,9 +26,9 @@
             <td>
                 <?php if ( $view['zip_path'] ) : ?>
                     <a href="<?php echo $view['zip_url']; ?>"><button class="button btn-danger">Download ZIP</button></a>
+                    <a href="#"><button class="button btn-danger">Delete ZIP</button></a>
                 <?php endif; ?>
 
-                <a href="#"><button class="button btn-danger">Delete ZIP</button></a>
             </td>
         </tr>
     </tbody>
