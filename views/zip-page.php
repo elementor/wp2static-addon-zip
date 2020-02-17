@@ -25,8 +25,18 @@
             </td>
             <td>
                 <?php if ( $view['zip_path'] ) : ?>
-                    <a href="<?php echo $view['zip_url']; ?>"><button class="button btn-danger">Download ZIP</button></a>
-                    <a href="#"><button class="button btn-danger">Delete ZIP</button></a>
+                    <a style="float:left;margin-right:10px;" href="<?php echo $view['zip_url']; ?>"><button class="button btn-danger">Download ZIP</button></a>
+
+<form
+    name="wp2static-zip-delete"
+    method="POST"
+    action="<?php echo esc_url( admin_url('admin-post.php') ); ?>">
+
+    <?php wp_nonce_field( $view['nonce_action'] ); ?>
+    <input name="action" type="hidden" value="wp2static_zip_delete" />
+
+    <button class="button btn-danger">Delete ZIP</button>
+</form>
                 <?php endif; ?>
 
             </td>

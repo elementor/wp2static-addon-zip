@@ -56,6 +56,12 @@ class Controller {
         //     1);
 
         add_action(
+            'admin_post_wp2static_zip_delete',
+            [ $this, 'deleteZip' ],
+            15,
+            1);
+
+        add_action(
             'wp2static_deploy',
             [ $this, 'generateZip' ],
             15,
@@ -161,16 +167,19 @@ class Controller {
 
     public static function renderZipPage() : void {
         $view = [];
-        $view['zip_size'] = filesize(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip');
-        $view['zip_created'] = date ("F d Y H:i:s.", filemtime(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip') );
-
+        $view['nonce_action'] = 'wp2static-zip-delete';
         $view['uploads_path'] = \WP2Static\SiteInfo::getPath('uploads');
-        $view['zip_path'] =
-            is_file(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip') ?
-                \WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip' : false;
+        $zip_path = \WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip';
+
+        $view['zip_path'] = is_file( $zip_path ) ?  $zip_path : false;
+
+        if ( is_file( $zip_path ) ) {
+            $view['zip_size'] = filesize(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip');
+            $view['zip_created'] = date ("F d Y H:i:s.", filemtime(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip') );
+        }
 
         $view['zip_url'] =
-            is_file(\WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip') ?
+            is_file( $zip_path ) ?
                 \WP2Static\SiteInfo::getUrl( 'uploads' ) . 'wp2static-processed-site.zip' : '#';
 
         require_once __DIR__ . '/../views/zip-page.php';
@@ -207,6 +216,20 @@ class Controller {
     //         $this->saveOption( 'deployment_url', $_POST['deployment_url'] );
     //     }
     // }
+
+    public function deleteZip( $processed_site_path ) {
+        error_log('DELETING ZIP');
+        check_admin_referer( 'wp2static-zip-delete' );
+
+        $zip_path = \WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip';
+
+        if ( is_file( $zip_path ) ) {
+            unlink( $zip_path );
+        }
+
+        wp_redirect(admin_url('admin.php?page=wp2static-zip'));
+        exit;
+    }
 
     public function generateZip( $processed_site_path ) {
         error_log('Zip Addon generating Zip');
