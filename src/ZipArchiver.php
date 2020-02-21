@@ -8,12 +8,10 @@ use RecursiveDirectoryIterator;
 
 class ZipArchiver {
 
-    public function __construct() {
-        error_log('constructing Wp2StaticZip\ZipArchiver');
-    }
+    public function __construct() {}
 
     public function generateArchive( $processed_site_path ) {
-        error_log('Generating ZIP archive from:' . $processed_site_path);
+        \WP2Static\WsLog::l('Generating deployable ZIP file...');
 
         $archive_path = rtrim( $processed_site_path, '/' );
         $temp_zip = $archive_path . '.tmp';
@@ -70,5 +68,7 @@ class ZipArchiver {
         rename( $temp_zip, $zip_path );
 
         chmod( $zip_path, 0644 );
+
+        \WP2Static\WsLog::l('Completed deployable ZIP file generation.');
     }
 }

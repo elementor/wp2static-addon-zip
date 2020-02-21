@@ -67,11 +67,11 @@ class Controller {
             15,
             1);
 
-        add_action(
-            'wp2static_post_process_file',
-            [ $this, 'convertURLsToOffline' ],
-            15,
-            2);
+        // add_action(
+        //     'wp2static_post_process_file',
+        //     [ $this, 'convertURLsToOffline' ],
+        //     15,
+        //     2);
 
         // add_action(
         //     'wp2static_set_destination_url',
@@ -89,6 +89,7 @@ class Controller {
         }
 	}
 
+    // TODO: is this needed? confirm slashing of destination URLs...
     public function modifyWordPressSiteURL( $site_url ) {
         return rtrim( $site_url, '/' );
     }
@@ -99,16 +100,15 @@ class Controller {
     //     return $options['deployment_url']->value;
     // }
 
-    public function convertURLsToOffline( $file, $processed_site_path ) {
-        error_log('Zip Addon converting URLs to offline in file: ' . $file);
-        error_log('within ProcessedSite path: ' . $processed_site_path);
+    // TODO: should be own addon for offline files
+    // public function convertURLsToOffline( $file, $processed_site_path ) {
+    //     WsLog::l('Zip Addon converting URLs to offline in file: ' . $file);
+    //     error_log('within ProcessedSite path: ' . $processed_site_path);
+    //     error_log('Detect type of file by name, extension or content type');
+    //     error_log('modify URL');
 
-        error_log('Detect type of file by name, extension or content type');
-
-        error_log('modify URL');
-
-        // other actions can process after this, based on priority
-    }
+    //     // other actions can process after this, based on priority
+    // }
 
     /**
      *  Get all add-on options
@@ -218,7 +218,7 @@ class Controller {
     // }
 
     public function deleteZip( $processed_site_path ) {
-        error_log('DELETING ZIP');
+        \WP2Static\WsLog::l( 'Deleting deployable site ZIP file.');
         check_admin_referer( 'wp2static-zip-delete' );
 
         $zip_path = \WP2Static\SiteInfo::getPath( 'uploads' ) . 'wp2static-processed-site.zip';
@@ -232,7 +232,7 @@ class Controller {
     }
 
     public function generateZip( $processed_site_path ) {
-        error_log('Zip Addon generating Zip');
+        \WP2Static\WsLog::l('Zip Addon generating Zip');
 
         $zip_archiver = new ZipArchiver();
         $zip_archiver->generateArchive( $processed_site_path );
@@ -282,7 +282,6 @@ class Controller {
 
     public static function deactivate_for_single_site() : void {
         error_log('deactivating zip addon, maintaining options');
-        //delete_option(self::OPTIONS_KEY);
     }
 
     public static function deactivate( bool $network_wide = null ) : void {
@@ -312,7 +311,7 @@ class Controller {
     }
 
     public static function activate( bool $network_wide = null ) : void {
-        error_log('activating zip addon 2');
+        error_log('activating zip addon');
         if ( $network_wide ) {
             global $wpdb;
 
