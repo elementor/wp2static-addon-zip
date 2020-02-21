@@ -4,13 +4,8 @@ namespace WP2StaticZip;
 
 class Controller {
     const VERSION = '0.1';
-    const PLUGIN_NAME = 'wp2static-addon-zip';
-    const OPTIONS_KEY = 'wp2static-addon-zip-options';
-    const HOOK = 'wp2static-addon-zip';
 
-	public function __construct() {
-
-	}
+	public function __construct() {}
 
 	public function run() {
         // initialize options DB
@@ -267,13 +262,6 @@ class Controller {
         }
 
         return $output;
-    }
-
-    public static function setDefaultOptions() : void {
-        $encrypted_options =
-            self::encrypt_decrypt('encrypt', 'someoptionsforzipaddon');
-
-        update_option(self::OPTIONS_KEY, $encrypted_options);
     }
 
     public static function activate_for_single_site() : void {
