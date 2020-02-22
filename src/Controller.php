@@ -8,7 +8,6 @@ class Controller {
 	public function __construct() {}
 
 	public function run() {
-        // initialize options DB
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
