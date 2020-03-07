@@ -2,8 +2,8 @@
 Contributors: leonstafford
 Tags: wp2static,zip,static
 Requires at least: 3.2
-Tested up to: 5.2
-Stable tag: 0.1
+Tested up to: 5.4
+Stable tag: 1.0-alpha-1
 License: Unlicense
 License URI: http://unlicense.org
 
@@ -24,6 +24,6 @@ Activate the plugin, then navigate to your WP2Static main plugin page to see
 
 == Changelog ==
 
-= 0.1 =
+= 1.1 =
 
 First release

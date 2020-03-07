@@ -3,10 +3,6 @@
 namespace WP2StaticZip;
 
 class Controller {
-    const VERSION = '0.1';
-
-	public function __construct() {}
-
 	public function run() {
         global $wpdb;
 
