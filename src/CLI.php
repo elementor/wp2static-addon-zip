@@ -20,7 +20,7 @@ class CLI {
      * @param string[] $args CLI args
      * @param string[] $assoc_args CLI args
      */
-    public function zip (
+    public function zip(
         array $args,
         array $assoc_args
     ) : void {

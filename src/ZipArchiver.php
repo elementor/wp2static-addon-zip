@@ -11,7 +11,7 @@ class ZipArchiver {
     public function __construct() {}
 
     public function generateArchive( $processed_site_path ) {
-        \WP2Static\WsLog::l('Generating deployable ZIP file...');
+        \WP2Static\WsLog::l( 'Generating deployable ZIP file...' );
 
         $archive_path = rtrim( $processed_site_path, '/' );
         $temp_zip = $archive_path . '.tmp';
@@ -69,6 +69,6 @@ class ZipArchiver {
 
         chmod( $zip_path, 0644 );
 
-        \WP2Static\WsLog::l('Completed deployable ZIP file generation.');
+        \WP2Static\WsLog::l( 'Completed deployable ZIP file generation.' );
     }
 }
