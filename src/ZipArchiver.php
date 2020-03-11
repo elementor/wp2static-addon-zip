@@ -10,7 +10,7 @@ class ZipArchiver {
 
     public function __construct() {}
 
-    public function generateArchive( $processed_site_path ) {
+    public function generateArchive( string $processed_site_path ) : void {
         \WP2Static\WsLog::l( 'Generating deployable ZIP file...' );
 
         $archive_path = rtrim( $processed_site_path, '/' );
@@ -20,8 +20,8 @@ class ZipArchiver {
 
         if ( $zip_archive->open( $temp_zip, ZipArchive::CREATE ) !== true ) {
             $err = 'Could not create zip: ' . $temp_zip;
-            WsLog::l( $err );
-            throw new WP2StaticException( $err );
+            \WP2Static\WsLog::l( $err );
+            throw new \WP2Static\WP2StaticException( $err );
         }
 
         $iterator = new RecursiveIteratorIterator(
@@ -38,8 +38,8 @@ class ZipArchiver {
 
                 if ( ! $real_filepath ) {
                     $err = 'Trying to add unknown file to Zip: ' . $filename;
-                    WsLog::l( $err );
-                    throw new WP2StaticException( $err );
+                    \WP2Static\WsLog::l( $err );
+                    throw new \WP2Static\WP2StaticException( $err );
                 }
 
                 // Standardise all paths to use / (Windows support)
@@ -55,8 +55,8 @@ class ZipArchiver {
                 )
                 ) {
                     $err = 'Could not add file: ' . $filename;
-                    WsLog::l( $err );
-                    throw new WP2StaticException( $err );
+                    \WP2Static\WsLog::l( $err );
+                    throw new \WP2Static\WP2StaticException( $err );
                 }
             }
         }
