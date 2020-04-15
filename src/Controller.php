@@ -63,8 +63,6 @@ class Controller {
     }
 
     public function generateZip( string $processed_site_path ) : void {
-        \WP2Static\WsLog::l( 'Zip Addon generating Zip' );
-
         $zip_archiver = new ZipArchiver();
         $zip_archiver->generateArchive( $processed_site_path );
     }
