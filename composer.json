@@ -17,12 +17,6 @@
         "docs": "https://wp2static.com/documentation",
         "source": "https://github.com/WP2Static/wp2static-addon-zip"
     },
-    "repositories": [
-        {
-            "type": "pear",
-            "url": "https://pear.php.net"
-        }
-    ],
     "require": {
         "php": ">=7.2"
     },

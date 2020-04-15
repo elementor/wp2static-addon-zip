@@ -88,11 +88,9 @@ class Controller {
     }
 
     public static function deactivate_for_single_site() : void {
-        error_log( 'deactivating zip addon, maintaining options' );
     }
 
     public static function deactivate( bool $network_wide = null ) : void {
-        error_log( 'deactivating zip addon 2' );
         if ( $network_wide ) {
             global $wpdb;
 
@@ -118,7 +116,6 @@ class Controller {
     }
 
     public static function activate( bool $network_wide = null ) : void {
-        error_log( 'activating zip addon' );
         if ( $network_wide ) {
             global $wpdb;
 
