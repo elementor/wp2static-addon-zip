@@ -68,23 +68,6 @@ class Controller {
     }
 
     public static function activate_for_single_site() : void {
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'wp2static_addon_zip_options';
-
-        $charset_collate = $wpdb->get_charset_collate();
-
-        $sql = "CREATE TABLE $table_name (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            name VARCHAR(255) NOT NULL,
-            value VARCHAR(255) NOT NULL,
-            label VARCHAR(255) NULL,
-            description VARCHAR(255) NULL,
-            PRIMARY KEY  (id)
-        ) $charset_collate;";
-
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta( $sql );
     }
 
     public static function deactivate_for_single_site() : void {
