@@ -70,5 +70,9 @@ class ZipArchiver {
         chmod( $zip_path, 0644 );
 
         \WP2Static\WsLog::l( 'Completed deployable ZIP file generation.' );
+        \WP2Static\WsLog::l(
+            'ZIP of static site available at: ' .
+            \WP2Static\SiteInfo::getUrl( 'uploads' ) . 'wp2static-processed-site.zip'
+        );
     }
 }
