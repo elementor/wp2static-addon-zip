@@ -25,7 +25,7 @@ class Controller {
             1
         );
 
-        add_filter('parent_file', [ $this, 'setActiveParentMenu' ]);
+        add_filter( 'parent_file', [ $this, 'setActiveParentMenu' ] );
 
         do_action(
             'wp2static_register_addon',
@@ -80,9 +80,11 @@ class Controller {
 
     public function generateZip( string $processed_site_path, string $enabled_deployer ) : void {
         if ( $enabled_deployer !== 'wp2static-addon-zip' ) {
-            $zip_archiver = new ZipArchiver();
-            $zip_archiver->generateArchive( $processed_site_path );
+            return;
         }
+
+        $zip_archiver = new ZipArchiver();
+        $zip_archiver->generateArchive( $processed_site_path );
     }
 
     public static function activate_for_single_site() : void {
@@ -142,22 +144,23 @@ class Controller {
     }
 
     public function addOptionsPage() : void {
-         add_submenu_page(
-             null,
-             'ZIP Deployment Options',
-             'ZIP Deployment Options',
-             'manage_options',
-             'wp2static-addon-zip',
-             [ $this, 'renderZipPage' ]
-         );
+        add_submenu_page(
+            'options.php',
+            'ZIP Deployment Options',
+            'ZIP Deployment Options',
+            'manage_options',
+            'wp2static-addon-zip',
+            [ $this, 'renderZipPage' ]
+        );
     }
 
     // ensure WP2Static menu is active for addon
-    public function setActiveParentMenu() {
+    public function setActiveParentMenu() : void {
             global $plugin_page;
 
-            if ('wp2static-addon-zip' === $plugin_page) {
-                $plugin_page = 'wp2static-options';
-            }
+        if ( 'wp2static-addon-zip' === $plugin_page ) {
+            // phpcs:ignore
+            $plugin_page = 'wp2static-options';
+        }
     }
 }
