@@ -4,8 +4,6 @@ namespace WP2StaticZip;
 
 class Controller {
     public function run() : void {
-        add_filter( 'wp2static_add_menu_items', [ 'WP2StaticZip\Controller', 'addSubmenuPage' ] );
-
         add_action(
             'admin_post_wp2static_zip_delete',
             [ $this, 'deleteZip' ],
@@ -17,7 +15,25 @@ class Controller {
             'wp2static_deploy',
             [ $this, 'generateZip' ],
             15,
+            2
+        );
+
+        add_action(
+            'admin_menu',
+            [ $this, 'addOptionsPage' ],
+            15,
             1
+        );
+
+        add_filter('parent_file', [ $this, 'setActiveParentMenu' ]);
+
+        do_action(
+            'wp2static_register_addon',
+            'wp2static-addon-zip',
+            'deploy',
+            'ZIP Deployment',
+            'https://wp2static.com/addons/zip/',
+            'Deploys to ZIP archive'
         );
 
         if ( defined( 'WP_CLI' ) ) {
@@ -62,9 +78,11 @@ class Controller {
         exit;
     }
 
-    public function generateZip( string $processed_site_path ) : void {
-        $zip_archiver = new ZipArchiver();
-        $zip_archiver->generateArchive( $processed_site_path );
+    public function generateZip( string $processed_site_path, string $enabled_deployer ) : void {
+        if ( $enabled_deployer !== 'wp2static-addon-zip' ) {
+            $zip_archiver = new ZipArchiver();
+            $zip_archiver->generateArchive( $processed_site_path );
+        }
     }
 
     public static function activate_for_single_site() : void {
@@ -123,15 +141,23 @@ class Controller {
         }
     }
 
-    /**
-     * Add sub menu to WP2Static menu
-     *
-     * @param mixed[] $submenu_pages array of loaded submenu pages
-     * @return mixed[] array of submenu pages
-     */
-    public static function addSubmenuPage( $submenu_pages ) : array {
-        $submenu_pages['zip'] = [ 'WP2StaticZip\Controller', 'renderZipPage' ];
+    public function addOptionsPage() : void {
+         add_submenu_page(
+             null,
+             'ZIP Deployment Options',
+             'ZIP Deployment Options',
+             'manage_options',
+             'wp2static-addon-zip',
+             [ $this, 'renderZipPage' ]
+         );
+    }
 
-        return $submenu_pages;
+    // ensure WP2Static menu is active for addon
+    public function setActiveParentMenu() {
+            global $plugin_page;
+
+            if ('wp2static-addon-zip' === $plugin_page) {
+                $plugin_page = 'wp2static';
+            }
     }
 }
