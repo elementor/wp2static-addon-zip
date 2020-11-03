@@ -4,13 +4,12 @@
  * Plugin Name:       WP2Static Add-on: Zip Deployment
  * Plugin URI:        https://wp2static.com
  * Description:       Zip deployment add-on for WP2Static.
- * Version:           1.0-alpha-005
+ * Version:           1.0-alpha-006
  * Author:            Leon Stafford
  * Author URI:        https://ljs.dev
  * License:           Unlicense
  * License URI:       http://unlicense.org
  * Text Domain:       wp2static-addon-zip
- * Domain Path:       /languages
  */
 
 if ( ! defined( 'WPINC' ) ) {
@@ -18,7 +17,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 define( 'WP2STATIC_ZIP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'WP2STATIC_ZIP_VERSION', '1.0-alpha-005' );
+define( 'WP2STATIC_ZIP_VERSION', '1.0-alpha-006' );
 
 require WP2STATIC_ZIP_PATH . 'vendor/autoload.php';
 
