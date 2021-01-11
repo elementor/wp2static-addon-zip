@@ -23,7 +23,7 @@ if ( file_exists( WP2STATIC_ZIP_PATH . 'vendor/autoload.php' ) ) {
     require_once WP2STATIC_ZIP_PATH . 'vendor/autoload.php';
 }
 
-if ( ! class_exists( 'WP2STATIC_ZIP_PATH\Controller' ) ) {
+if ( ! class_exists( 'WP2StaticZip\Controller' ) ) {
     if ( file_exists( WP2STATIC_ZIP_PATH . 'src/WP2StaticZipException.php' ) ) {
         require_once WP2STATIC_ZIP_PATH . 'src/WP2StaticZipException.php';
 
