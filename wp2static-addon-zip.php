@@ -4,7 +4,7 @@
  * Plugin Name:       WP2Static Add-on: Zip Deployment
  * Plugin URI:        https://wp2static.com
  * Description:       Zip deployment add-on for WP2Static.
- * Version:           1.0-alpha-006
+ * Version:           1.0.1
  * Author:            Leon Stafford
  * Author URI:        https://ljs.dev
  * License:           Unlicense
@@ -17,11 +17,25 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 define( 'WP2STATIC_ZIP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'WP2STATIC_ZIP_VERSION', '1.0-alpha-006' );
+define( 'WP2STATIC_ZIP_VERSION', '1.0.1' );
 
-require WP2STATIC_ZIP_PATH . 'vendor/autoload.php';
+if ( file_exists( WP2STATIC_ZIP_PATH . 'vendor/autoload.php' ) ) {
+    require_once WP2STATIC_ZIP_PATH . 'vendor/autoload.php';
+}
 
-function run_wp2static_addon_zip() {
+if ( ! class_exists( 'WP2STATIC_ZIP_PATH\Controller' ) ) {
+    if ( file_exists( WP2STATIC_ZIP_PATH . 'src/WP2StaticZipException.php' ) ) {
+        require_once WP2STATIC_ZIP_PATH . 'src/WP2StaticZipException.php';
+
+        throw new WP2StaticZip\WP2StaticZipException(
+            'Looks like you\'re trying to activate this addon from source' .
+            ' code, without compiling it first. Please see' .
+            ' https://wp2static.com/compiling-from-source for assistance.'
+        );
+    }
+}
+
+function run_wp2static_addon_zip() : void {
     $controller = new WP2StaticZip\Controller();
     $controller->run();
 }

@@ -39,7 +39,7 @@ class Controller {
         if ( defined( 'WP_CLI' ) ) {
             \WP_CLI::add_command(
                 'wp2static zip',
-                [ 'WP2StaticZip\CLI', 'zip' ]
+                [ CLI::class, 'zip' ]
             );
         }
     }

@@ -8,6 +8,15 @@ Adds a Zip archive deployment option for WP2Static.
 Development
 ===========
 
+Using directly from source code:
 
-`composer install`
+ - clone this repo into your `wp-content/plugins/` directory
+ - `composer install`
+
+To builld an installable zip file:
+
+ - clone this repo anywhere
+ - `composer install`
+ - `composer build wp2static-addon-zip`
+
 
