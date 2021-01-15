@@ -43,9 +43,6 @@
         }
     },
     "config": {
-        "platform": {
-          "php": "7.2.17"
-        },
         "preferred-install": {
             "*": "dist"
         },
@@ -53,8 +50,8 @@
     },
     "scripts": {
         "phpstan": "php -d memory_limit=-1 ./vendor/bin/phpstan analyse",
-        "phpcs": "vendor/bin/phpcs --standard=./tools/phpcs.xml --ignore=,*/tests/*,*/vendor/*,*/views/*,wp2static-addon-zip.php ./",
-        "phpcbf": "vendor/bin/phpcbf --standard=./tools/phpcs.xml --ignore=*/js/*,*/tests/*,*/admin/*,*/coverage/*,*.js,*/vendor/*,*/views/*.php ./",
+        "phpcs": "vendor/bin/phpcs --standard=./tools/phpcs.xml --ignore=,*/tests/*,*/vendor/* ./",
+        "phpcbf": "vendor/bin/phpcbf --standard=./tools/phpcs.xml --ignore=*/js/*,*/tests/*,*/admin/*,*/coverage/*,*.js,*/vendor/* ./",
         "phpunit": "vendor/bin/phpunit ./tests/unit/",
         "lint": "vendor/bin/parallel-lint --exclude vendor .",
         "build": "/bin/sh tools/build_release.sh",
