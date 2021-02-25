@@ -51,7 +51,7 @@ class ZipArchiver {
 
                 if ( ! $zip_archive->addFile(
                     $real_filepath,
-                    str_replace( $processed_site_path, '', $filename )
+                    str_replace( $processed_site_path, '.', $filename )
                 )
                 ) {
                     $err = 'Could not add file: ' . $filename;
