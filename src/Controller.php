@@ -74,7 +74,7 @@ class Controller {
             unlink( $zip_path );
         }
 
-        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-zip' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=wp2static-addon-zip' ) );
         exit;
     }
 
